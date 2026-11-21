@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="es" class="no-js">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AETHERIS HOROLOGY — Alta Relojería Astronómica &amp; Esculturas Cinéticas | Ginebra</title>
+  <meta name="description" content="Alta relojería astronómica y esculturas cinéticas mecanizadas en Titanio Grado 5. Atelier privado en Ginebra." />
+
+  <!-- Editorial & Technical Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Three.js r128 & GSAP 3.12.5 + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Architectural Overlays -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+  <div class="swiss-grid-bg" aria-hidden="true">
+    <span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- Persistent Three.js WebGL Stage -->
+  <canvas id="webgl-stage" aria-hidden="true"></canvas>
+
+  <!-- Custom Magnetic Cursor -->
+  <div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-reticle" id="cursor-reticle" aria-hidden="true">
+    <span class="cursor-label" id="cursor-label"></span>
+  </div>
+
+  <!-- Calibration Preloader -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-top">
+      <span>AETHERIS HOROLOGY // GENÈVE</span>
+      <span>CALIBRE AT-09 — INIT</span>
+    </div>
+    <div class="preloader-center">
+      <div class="preloader-brand">AETHERIS</div>
+      <div class="preloader-bar-wrap">
+        <div class="preloader-bar" id="preloader-bar"></div>
+      </div>
+      <div class="preloader-counter" id="preloader-counter">000.0%</div>
+    </div>
+    <div class="preloader-bottom">
+      <span>LAT 46.2044° N / LON 06.1432° E</span>
+      <span id="preloader-status">CALIBRATING ESCAPEMENT...</span>
+    </div>
+  </div>
+
+  <!-- Fixed Architectural Navigation HUD -->
+  <header class="hud-header">
+    <a href="#hero" class="hud-brand" data-magnetic data-cursor="TOP">
+      <svg class="hud-brand-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="14" stroke="#c8b496" stroke-width="1"/>
+        <ellipse cx="16" cy="16" rx="14" ry="5.5" transform="rotate(-23.4 16 16)" stroke="#eceae4" stroke-width="0.8"/>
+        <line x1="16" y1="0" x2="16" y2="32" stroke="rgba(255,255,255,0.35)" stroke-width="0.75"/>
+        <circle cx="16" cy="16" r="2.2" fill="#c8b496"/>
+      </svg>
+      <span class="hud-brand-name">AETHERIS</span>
+    </a>
+
+    <nav class="hud-nav" aria-label="Navegación principal">
+      <a href="#manifiesto" class="hud-link" data-magnetic data-cursor="READ">[01] Manifiesto</a>
+      <a href="#calibres" class="hud-link" data-magnetic data-cursor="INSPECT">[02] Calibres</a>
+      <a href="#titanio" class="hud-link" data-magnetic data-cursor="SPECS">[03] Titanio Ti-5</a>
+      <a href="#atelier" class="hud-link" data-magnetic data-cursor="ATELIER">[04] Atelier Ginebra</a>
+    </nav>
+
+    <div class="hud-telemetry">
+      <div class="hud-clock-group" title="Hora Atómica de Ginebra">
+        <span class="pulse-dot"></span>
+        <span>GVA</span>
+        <span id="hud-clock">12:00:00</span>
+      </div>
+      <a href="#atelier" class="hud-cta" data-magnetic data-cursor="RESERVE">Cita Privada</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============================================================
+         SECTION 01: HERO CINÉTICO INMERSIVO
+         ============================================================ -->
+    <section class="hero" id="hero">
+      <div class="hero-top-meta">
+        <div>[01/04] ESCULTURA CINÉTICA</div>
+        <div>LAT 46.2044° N &mdash; LON 06.1432° E</div>
+        <div>CALIBRE AT-09 // 21,600 VPH</div>
+        <div>TI-6AL-4V GRADO 5</div>
+      </div>
+
+      <div class="hero-center">
+        <div class="hero-kicker">
+          <span class="hero-kicker-line"></span>
+          <span class="micro-tag">HAUTE HORLOGERIE ASTRONOMIQUE // GENÈVE</span>
+        </div>
+
+        <div class="hero-display-wrap">
+          <h1 class="hero-display">
+            <span class="line"><span class="line-inner hero-reveal">ASTRONOMÍA</span></span>
+            <span class="line"><span class="line-inner hero-reveal indent">ESCULPIDA</span></span>
+            <span class="line"><span class="line-inner hero-reveal">EN TITANIO</span></span>
+          </h1>
+        </div>
+
+        <aside class="hero-float-badge" data-parallax data-speed="-45">
+          <div class="hero-float-badge-row">
+            <span>MOVIMIENTO</span>
+            <strong>TRI-AXIAL AT-09</strong>
+          </div>
+          <div class="hero-float-badge-row">
+            <span>TIEMPO SIDÉREO</span>
+            <strong id="hero-sidereal">00H 00M 00S</strong>
+          </div>
+          <div class="hero-float-badge-row">
+            <span>TOLERANCIA CNC</span>
+            <strong>&plusmn;0.002 MM</strong>
+          </div>
+          <div class="hero-float-badge-row">
+            <span>PRODUCCIÓN</span>
+            <strong>08 PIEZAS / AÑO</strong>
+          </div>
+        </aside>
+      </div>
+
+      <div class="hero-bottom">
+        <p class="hero-statement">
+          Arquitectura orbital miniaturizada a la escala de la muñeca. Mecanismos astronómicos de jaula suspendida tallados en bloques sólidos de Titanio Grado 5 y calibrados en nuestro atelier subterráneo de Ginebra.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#calibres" class="magnetic-btn" data-magnetic data-cursor="EXPLORE">
+            <span>Explorar Calibres</span>
+            <span>&darr;</span>
+          </a>
+          <button type="button" class="magnetic-btn" id="hero-open-inspector" data-magnetic data-cursor="INSPECT">
+            <span>Inspección 3D [AT-09]</span>
+            <span>&#9678;</span>
+          </button>
+        </div>
+
+        <div class="hero-scroll-indicator">
+          <span>Scroll Cinético</span>
+          <div class="scroll-track"></div>
+          <span>001</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         KINETIC DIFFERENCE BAND (MIX-BLEND-MODE: DIFFERENCE)
+         ============================================================ -->
+    <div class="difference-band" aria-hidden="true">
+      <div class="difference-plinth" data-parallax data-speed="65"></div>
+      <div class="difference-track" id="difference-track">
+        <div class="difference-text">
+          GRAVITACIÓN CERO <span>[AT-09]</span> MECÁNICA SIDÉREA <span>[TI-6AL-4V]</span> ESCULTURA CINÉTICA <span>[46.2044° N]</span>
+        </div>
+        <div class="difference-text">
+          GRAVITACIÓN CERO <span>[AT-09]</span> MECÁNICA SIDÉREA <span>[TI-6AL-4V]</span> ESCULTURA CINÉTICA <span>[46.2044° N]</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         SECTION 02: EL MANIFIESTO MECÁNICO
+         ============================================================ -->
+    <section class="manifesto" id="manifiesto">
+      <div class="container">
+        <div class="section-header">
+          <div class="micro-tag">[02/04] &mdash; MANIFIESTO MECÁNICO</div>
+          <h2 class="section-title">Contra la tiranía del <em>segundo</em> convencional</h2>
+          <div class="micro-tag micro-tag--muted" style="justify-self: end;">DOC. REF // AE-MNF-2026</div>
+        </div>
+
+        <div class="manifesto-grid">
+          <!-- Left Parallax Column: Horological Blueprint -->
+          <div class="manifesto-side-col" data-parallax data-speed="-55">
+            <figure class="schematic-card">
+              <div class="schematic-card-header">
+                <span>FIG. 01 // JAULA TRI-AXIAL</span>
+                <span>ESC. 4:1</span>
+              </div>
+              <svg class="schematic-svg" viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="130" cy="130" r="118" stroke="rgba(255,255,255,0.14)" stroke-dasharray="2 4"/>
+                <circle cx="130" cy="130" r="92" stroke="#c8b496" stroke-width="0.9"/>
+                <ellipse cx="130" cy="130" rx="92" ry="34" transform="rotate(23.44 130 130)" stroke="rgba(236,234,228,0.65)" stroke-width="0.8"/>
+                <ellipse cx="130" cy="130" rx="92" ry="34" transform="rotate(-66.56 130 130)" stroke="rgba(200,180,150,0.45)" stroke-width="0.8"/>
+                <circle cx="130" cy="130" r="44" stroke="rgba(255,255,255,0.35)" stroke-width="0.75"/>
+                <circle cx="130" cy="130" r="14" stroke="#c8b496" stroke-width="1.2"/>
+                <circle cx="130" cy="130" r="3" fill="#c8b496"/>
+                <line x1="130" y1="4" x2="130" y2="256" stroke="rgba(255,255,255,0.15)" stroke-width="0.6"/>
+                <line x1="4" y1="130" x2="256" y2="130" stroke="rgba(255,255,255,0.15)" stroke-width="0.6"/>
+                <text x="14" y="22" fill="#76736d" font-family="JetBrains Mono" font-size="8">INCL. 23°26'21"</text>
+                <text x="178" y="246" fill="#c8b496" font-family="JetBrains Mono" font-size="8">REV. 60S / 30S</text>
+              </svg>
+              <figcaption class="schematic-caption">
+                Compensación gravitacional continua mediante tres ejes concéntricos en suspensión libre, reduciendo la desviación isócrona a menos de 0.3 segundos por día sidéreo.
+              </figcaption>
+            </figure>
+          </div>
+
+          <!-- Center Editorial Manifesto Copy -->
+          <div>
+            <p class="manifesto-copy" id="manifesto-text">
+              No fabricamos instrumentos para obedecer agendas. Esculpimos <span class="accent">máquinas celestes</span> que devuelven al tiempo su dimensión astronómica: rotación planetaria, precesión equinoccial y silencio metálico. Cada puente de <span class="accent">Titanio Grado 5</span> elimina lo superfluo hasta dejar únicamente tensión cinética, gravedad domesticada y luz refractada en cantos biselados a mano.
+            </p>
+
+            <div class="manifesto-principles">
+              <article class="principle-item">
+                <div class="principle-num">[P.01] &mdash; SÍNTESIS BRUTALISTA</div>
+                <h3 class="principle-title">Arquitectura sin esfera</h3>
+                <p class="principle-desc">Suprimimos las carátulas decorativas. La platina estructural actúa como cosmos abierto donde cada rueda de latón recubierto en rutenio expone su función exacta.</p>
+              </article>
+
+              <article class="principle-item">
+                <div class="principle-num">[P.02] &mdash; MASA MÍNIMA</div>
+                <h3 class="principle-title">Inercia casi nula</h3>
+                <p class="principle-desc">Una jaula de tourbillon de 0.29 gramos exige menos par motor, extendiendo la reserva de marcha isócrona hasta 120 horas con doble barrilete acoplado.</p>
+              </article>
+
+              <article class="principle-item">
+                <div class="principle-num">[P.03] &mdash; ACABADO NOCTURNO</div>
+                <h3 class="principle-title">Biselado en espejo negro</h3>
+                <p class="principle-desc">Más de 180 horas de pulido manual sobre madera de genciana para lograr ángulos interiores que absorben la luz frontal y destellan al inclinar la muñeca.</p>
+              </article>
+
+              <article class="principle-item">
+                <div class="principle-num">[P.04] &mdash; TIEMPO SIDÉREO</div>
+                <h3 class="principle-title">Precisión de 122 años</h3>
+                <p class="principle-desc">Tren epicicloidal calibrado para seguir el día sidéreo real de 23h 56m 4.09s y las fases lunares con un error acumulado inferior a un día cada siglo y cuarto.</p>
+              </article>
+            </div>
+          </div>
+
+          <!-- Right Parallax Column: Telemetry Counter -->
+          <div class="manifesto-side-col" data-parallax data-speed="70">
+            <div class="floating-stat-block">
+              <span class="micro-tag">MASA DE JAULA</span>
+              <div class="floating-stat-value">0.29<span style="font-size: 0.45em;">g</span></div>
+              <p class="floating-stat-label">
+                74 microcomponentes ensamblados bajo microscopio estereoscópico en sala limpia ISO-5.
+              </p>
+            </div>
+
+            <div class="schematic-card">
+              <div class="schematic-card-header">
+                <span>FIG. 02 // ESCAPE CONSTANTE</span>
+                <span>3 HZ</span>
+              </div>
+              <svg class="schematic-svg" viewBox="0 0 260 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 75 Q 45 20, 78 75 T 144 75 T 210 75 T 248 75" stroke="#c8b496" stroke-width="1.1"/>
+                <path d="M12 75 Q 45 110, 78 75 T 144 75 T 210 75 T 248 75" stroke="rgba(255,255,255,0.22)" stroke-width="0.8" stroke-dasharray="3 3"/>
+                <line x1="12" y1="75" x2="248" y2="75" stroke="rgba(255,255,255,0.12)"/>
+                <circle cx="78" cy="75" r="3" fill="#eceae4"/>
+                <circle cx="144" cy="75" r="3" fill="#c8b496"/>
+                <circle cx="210" cy="75" r="3" fill="#eceae4"/>
+                <text x="14" y="138" fill="#76736d" font-family="JetBrains Mono" font-size="8">AMPLITUD CONSTANTE 295° // SIN LUBRICACIÓN</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 03: CALIBRES & COMPLICACIONES (3D FLOATING CARDS)
+         ============================================================ -->
+    <section class="calibres" id="calibres">
+      <div class="container">
+        <div class="section-header">
+          <div class="micro-tag">[03/04] &mdash; CALIBRES &amp; COMPLICACIONES</div>
+          <h2 class="section-title">Tres arquitecturas de <em>órbita</em></h2>
+          <div class="micro-tag micro-tag--muted" style="justify-self: end;">INTERACTIVE WEBGL CAD</div>
+        </div>
+
+        <div class="calibres-intro">
+          <p>
+            Cada calibre Aetheris se concibe primero como escultura cinética tridimensional y después se comprime a dimensiones ponibles. Seleccione cualquier pieza para abrir el visor mecánico interactivo en tiempo real con vista explosionada y modo wireframe CAD.
+          </p>
+          <span class="micro-tag">[CLICK EN CUALQUIER CALIBRE PARA INSPECCIÓN 360°]</span>
+        </div>
+
+        <div class="calibres-grid">
+          <!-- Card 01: AT-09 -->
+          <article class="calibre-card" data-calibre="AT-09" data-cursor="INSPECT" tabindex="0" role="button" aria-label="Inspeccionar Calibre AT-09 Astrolabe Sidéral en 3D">
+            <div class="calibre-card-top">
+              <span class="code">CALIBRE AT-09</span>
+              <span>[01/03] // 412 PIEZAS</span>
+            </div>
+
+            <div class="calibre-visual">
+              <svg viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="110" cy="110" r="98" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                <g class="spin-slow">
+                  <circle cx="110" cy="110" r="84" stroke="#c8b496" stroke-width="1" stroke-dasharray="14 6 2 6"/>
+                  <circle cx="194" cy="110" r="3.5" fill="#c8b496"/>
+                  <line x1="110" y1="26" x2="110" y2="194" stroke="rgba(200,180,150,0.22)" stroke-width="0.75"/>
+                </g>
+                <g class="spin-counter">
+                  <ellipse cx="110" cy="110" rx="64" ry="28" stroke="#eceae4" stroke-width="0.9"/>
+                  <ellipse cx="110" cy="110" rx="28" ry="64" stroke="rgba(236,234,228,0.4)" stroke-width="0.75"/>
+                </g>
+                <g class="spin-fast">
+                  <polygon points="110,82 134,124 86,124" stroke="#c8b496" stroke-width="1" fill="none"/>
+                </g>
+                <circle cx="110" cy="110" r="7" stroke="#eceae4" stroke-width="1"/>
+                <circle cx="110" cy="110" r="2.2" fill="#c8b496"/>
+              </svg>
+            </div>
+
+            <div class="calibre-body">
+              <h3 class="calibre-name">Astrolabe Sidéral</h3>
+              <p class="calibre-desc">
+                Esfera armilar inclinada a 23.44° con carta celeste de Ginebra en zafiro metalizado y tourbillon volante de 60 segundos.
+              </p>
+
+              <div class="calibre-specs-mini">
+                <div class="calibre-spec-cell">
+                  <span>FRECUENCIA</span>
+                  <strong>21,600 VPH (3 Hz)</strong>
+                </div>
+                <div class="calibre-spec-cell">
+                  <span>RESERVA</span>
+                  <strong>120 HORAS</strong>
+                </div>
+                <div class="calibre-spec-cell">
+                  <span>DIÁMETRO</span>
+                  <strong>43.5 MM TI-5</strong>
+                </div>
+                <div class="calibre-spec-cell">
+                  <span>EDICIÓN</span>
+                  <strong>08 EJEMPLARES</strong>
+                </div>
+              </div>
+
+              <div class="calibre-inspect-btn">
+                <span>Abrir Inspección 3D</span>
+                <span>[INSPECT &rarr;]</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 02: AT-12 -->
+          <article class="calibre-card" data-calibre="AT-12" data-cursor="INSPECT" tabindex="0" role="button" aria-label="Inspeccionar Calibre AT-12 Tourbillon Tri-Axial en 3D">
+            <div class="calibre-card-top">
+              <span class="code">CALIBRE AT-12</span>
+              <span>[02/03] // 488 PIEZAS</span>
+            </div>
+
+            <div class="calibre-visual">
+              <svg viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="110" cy="110" r="98" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                <g class="spin-counter">
+                  <circle cx="110" cy="110" r="78" stroke="rgba(236,234,228,0.55)" stroke-width="1"/>
+                  <rect x="60" y="60" width="100" height="100" stroke="rgba(255,255,255,0.18)" stroke-width="0.75" transform="rotate(45 110 110)"/>
+                </g>
+                <g class="spin-slow">
+                  <circle cx="110" cy="110" r="54" stroke="#c8b496" stroke-width="1.2" stroke-dasharray="4 4"/>
+                  <line x1="56" y1="110" x2="164" y2="110" stroke="#c8b496" stroke-width="0.8"/>
+                </g>
+                <g class="spin-fast">
+                  <circle cx="110" cy="110" r="30" stroke="#eceae4" stroke-width="1"/>
+                  <circle cx="140" cy="110" r="3" fill="#c8b496"/>
+                  <circle cx="80" cy="110" r="3" fill="#c8b496"/>
+                </g>
+                <circle cx="110" cy="110" r="4" fill="#eceae4"/>
+              </svg>
+            </div>
+
+            <div class="calibre-body">
+              <h3 class="calibre-name">Tourbillon Tri-Axial</h3>
+              <p class="calibre-desc">
+                Tres jaulas ortogonales de titanio mecanizado por electroerosión con espiral cilíndrica libre y puentes en voladizo.
+              </p>
+
+              <div class="calibre-specs-mini">
+                <div class="calibre-spec-cell">
+                  <span>FRECUENCIA</span>
+                  <strong>28,800 VPH (4 Hz)</strong>
+                </div>
+                <div class="calibre-spec-cell">
+                  <span>RESERVA</span>
+                  <strong>96 HORAS</strong>
+                </div>
+                <div class="calibre-spec-cell">
+                  <span>DIÁMETRO</span>
+                  <strong>44.0 MM TI-5</strong>
+                </div>
+                <div class="calibre-spec-cell">
+                  <span>EDICIÓN</span>
+                  <strong>05 EJEMPLARES</strong>
+                </div>
+              </div>
+
+              <div class="calibre-inspect-btn">
+                <span>Abrir Inspección 3D</span>
+                <span>[INSPECT &rarr;]</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 03: AT-15 -->
+          <article class="calibre-card" data-calibre="AT-15" data-cursor="INSPECT" tabindex="0" role="button" aria-label="Inspeccionar Calibre AT-15 Équation du Temps en 3D">
+            <div class="calibre-card-top">
+              <span class="code">CALIBRE AT-15</span>
+              <span>[03/03] // 536 PIEZAS</span>
+            </div>
+
+            <div class="calibre-visual">
+              <svg viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="110" cy="110" r="98" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                <circle cx="110" cy="110" r="82" stroke="rgba(255,255,255,0.16)" stroke-dasharray="1 5"/>
+                <g class="spin-slow">
+                  <path d="M110 42 C152 42, 166 78, 152 110 C138 142, 164 166, 110 176 C66 176, 54 140, 68 110 C82 80, 68 42, 110 42 Z" stroke="#c8b496" stroke-width="1.2" fill="rgba(200,180,150,0.04)"/>
+                </g>
+                <g class="spin-counter">
+                  <circle cx="110" cy="110" r="46" stroke="#eceae4" stroke-width="0.9" stroke-dasharray="18 6"/>
+                  <line x1="110" y1="64" x2="110" y2="156" stroke="rgba(255,255,255,0.3)" stroke-width="0.7"/>
+                </g>
+                <circle cx="110" cy="110" r="10" stroke="#c8b496" stroke-width="1"/>
+                <circle cx="110" cy="110" r="2.5" fill="#eceae4"/>
+              </svg>
+            </div>
+
+            <div class="calibre-body">
+              <h3 class="calibre-name">&Eacute;quation du Temps</h3>
+              <p class="calibre-desc">
+                Leva analemática tallada para el meridiano del coleccionista, mostrando la divergencia real entre tiempo solar y civil.
+              </p>
+
+              <div class="calibre-specs-mini">
+                <div class="calibre-spec-cell">
+                  <span>FRECUENCIA</span>
+                  <strong>18,000 VPH (2.5 Hz)</strong>
+                </div>
+                <div class="calibre-spec-cell">
+                  <span>RESERVA</span>
+                  <strong>144 HORAS</strong>
+                </div>
+                <div class="calibre-spec-cell">
+                  <span>DIÁMETRO</span>
+                  <strong>42.8 MM TI-5</strong>
+                </div>
+                <div class="calibre-spec-cell">
+                  <span>EDICIÓN</span>
+                  <strong>03 EJEMPLARES</strong>
+                </div>
+              </div>
+
+              <div class="calibre-inspect-btn">
+                <span>Abrir Inspección 3D</span>
+                <span>[INSPECT &rarr;]</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 04: ESPECIFICACIONES TÉCNICAS TITANIO GRADO 5
+         ============================================================ -->
+    <section class="titanium" id="titanio">
+      <div class="container">
+        <div class="section-header">
+          <div class="micro-tag">[04/04] &mdash; METALURGIA AEROESPACIAL</div>
+          <h2 class="section-title">Titanio <em>Grado 5</em> Ti-6Al-4V</h2>
+          <div class="micro-tag micro-tag--muted" style="justify-self: end;">CERT. ASTM B348 // ISO 5832-3</div>
+        </div>
+
+        <div class="titanium-layout">
+          <!-- Left Sticky Alloy Plate -->
+          <aside class="titanium-plate">
+            <span class="micro-tag">MATRIZ ESTRUCTURAL // BLOQUE FORJADO</span>
+            <h3 class="titanium-alloy-code">Ti<span>-6</span>Al<span>-4</span>V</h3>
+            <p class="titanium-summary">
+              Cada caja y platina Aetheris se fresa durante 42 horas continuas en centros CNC de 5 ejes a partir de lingotes forjados de grado aeroespacial. Su relación resistencia-peso permite jaulas abiertas imposibles en oro o platino sin fatiga estructural.
+            </p>
+
+            <div class="composition-bars" id="composition-bars">
+              <div class="comp-row">
+                <div class="comp-row-head">
+                  <span>TITANIO PURO (Ti) — MATRIZ ALFA-BETA</span>
+                  <strong>89.40%</strong>
+                </div>
+                <div class="comp-track">
+                  <div class="comp-fill" data-width="89.4%"></div>
+                </div>
+              </div>
+
+              <div class="comp-row">
+                <div class="comp-row-head">
+                  <span>ALUMINIO (Al) — ESTABILIZADOR FASE ALFA</span>
+                  <strong>6.15%</strong>
+                </div>
+                <div class="comp-track">
+                  <div class="comp-fill" data-width="61.5%"></div>
+                </div>
+              </div>
+
+              <div class="comp-row">
+                <div class="comp-row-head">
+                  <span>VANADIO (V) — TENACIDAD FASE BETA</span>
+                  <strong>4.10%</strong>
+                </div>
+                <div class="comp-track">
+                  <div class="comp-fill" data-width="41%"></div>
+                </div>
+              </div>
+
+              <div class="comp-row">
+                <div class="comp-row-head">
+                  <span>TRAZAS CONTROLADAS (Fe, O, C)</span>
+                  <strong>0.35%</strong>
+                </div>
+                <div class="comp-track">
+                  <div class="comp-fill" data-width="12%"></div>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Right Brutalist Specification Ledger -->
+          <div>
+            <div class="spec-table-wrap">
+              <div class="spec-row">
+                <span class="spec-idx">[M.01]</span>
+                <span class="spec-param">Densidad Específica</span>
+                <span class="spec-val">4.43 g/cm&sup3;</span>
+                <span class="spec-note">44% más ligero que acero 316L</span>
+              </div>
+
+              <div class="spec-row">
+                <span class="spec-idx">[M.02]</span>
+                <span class="spec-param">Dureza Superficial</span>
+                <span class="spec-val">349 HV / 1,250 HV*</span>
+                <span class="spec-note">*Con tratamiento DLC micro-plasma</span>
+              </div>
+
+              <div class="spec-row">
+                <span class="spec-idx">[M.03]</span>
+                <span class="spec-param">Resistencia a la Tracción</span>
+                <span class="spec-val">950 MPa</span>
+                <span class="spec-note">Límite elástico 880 MPa</span>
+              </div>
+
+              <div class="spec-row">
+                <span class="spec-idx">[M.04]</span>
+                <span class="spec-param">Tolerancia de Mecanizado</span>
+                <span class="spec-val">&plusmn;0.002 mm</span>
+                <span class="spec-note">Electroerosión por hilo &amp; CNC 5 ejes</span>
+              </div>
+
+              <div class="spec-row">
+                <span class="spec-idx">[M.05]</span>
+                <span class="spec-param">Dilatación Térmica</span>
+                <span class="spec-val">8.6 &times; 10&sup-;&sup6; K&sup-;&sup1;</span>
+                <span class="spec-note">Estabilidad orbital de -20°C a +70°C</span>
+              </div>
+
+              <div class="spec-row">
+                <span class="spec-idx">[M.06]</span>
+                <span class="spec-param">Cúpula Óptica</span>
+                <span class="spec-val">Zafiro Corindón 2,000 HV</span>
+                <span class="spec-note">Bóveda hemisférica antirreflejo dual</span>
+              </div>
+
+              <div class="spec-row">
+                <span class="spec-idx">[M.07]</span>
+                <span class="spec-param">Susceptibilidad Magnética</span>
+                <span class="spec-val">Paramagnético</span>
+                <span class="spec-note">Inmunidad hasta 15,000 Gauss</span>
+              </div>
+
+              <div class="spec-row">
+                <span class="spec-idx">[M.08]</span>
+                <span class="spec-param">Acabado de Puentes</span>
+                <span class="spec-val">Micro-granallado &amp; Anglage</span>
+                <span class="spec-note">184 horas de acabado manual por calibre</span>
+              </div>
+            </div>
+
+            <div class="metallurgy-callouts" data-parallax data-speed="-25">
+              <div class="callout-cell">
+                <span class="micro-tag">CÁMARA DE VACÍO</span>
+                <div class="callout-val">3 ATM</div>
+                <p class="callout-sub">Juntas fluorocarbonadas FKM calibradas para presión barométrica extrema.</p>
+              </div>
+              <div class="callout-cell">
+                <span class="micro-tag">PESO TOTAL</span>
+                <div class="callout-val">54.2g</div>
+                <p class="callout-sub">Incluyendo caja de Titanio Grado 5, calibre AT-09 y cierre desplegable.</p>
+              </div>
+              <div class="callout-cell">
+                <span class="micro-tag">GARANTÍA</span>
+                <div class="callout-val">VITALICIA</div>
+                <p class="callout-sub">Archivo metrológico individual custodiado en bóveda de Ginebra.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 05: FOOTER DE ATELIER PRIVADO EN GINEBRA
+         ============================================================ -->
+    <footer class="atelier-footer" id="atelier">
+      <div class="container">
+        <div class="atelier-grid">
+          <!-- Left: Geneva Atelier Information -->
+          <div>
+            <span class="micro-tag">[ATELIER PRIVADO // SOLO CON INVITACIÓN]</span>
+            <h2 class="atelier-info-title">Salón Subterráneo <em>de Ginebra</em></h2>
+            <p class="atelier-lead">
+              Aetheris no opera a través de distribuidores minoristas. Cada pieza se asigna en sesión privada junto a nuestros maestros relojeros en Rue du Rhône o mediante presentación privada en las coordenadas indicadas por el coleccionista.
+            </p>
+
+            <div class="atelier-coordinates">
+              <div class="coord-box">
+                <div class="coord-label">DIRECCIÓN DEL SALÓN</div>
+                <div class="coord-value">
+                  Rue du Rhône 42, Nivel B2<br />
+                  1204 Genève, Confédération Suisse
+                </div>
+              </div>
+
+              <div class="coord-box">
+                <div class="coord-label">MANUFACTURA CNC</div>
+                <div class="coord-value">
+                  Chemin du Pré-Fleuri 18<br />
+                  1228 Plan-les-Ouates, Genève
+                </div>
+              </div>
+
+              <div class="coord-box">
+                <div class="coord-label">COORDENADAS GEODÉSICAS</div>
+                <div class="coord-value gold">
+                  46°12'15.8" N // 06°08'35.5" E<br />
+                  ALTITUD 375 M
+                </div>
+              </div>
+
+              <div class="coord-box">
+                <div class="coord-label">HORA LOCAL / SIDÉREA</div>
+                <div class="coord-value">
+                  GVA: <span id="footer-gva-clock">--:--:--</span><br />
+                  LST: <span id="footer-sidereal-clock" class="gold">--H --M --S</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Private Dossier Request Form -->
+          <div class="dossier-form-wrap">
+            <div class="dossier-form-head">
+              <span>SOLICITUD DE DOSSIER &amp; ASIGNACIÓN</span>
+              <span>CICLO 2026–2027</span>
+            </div>
+
+            <form id="dossier-form" novalidate>
+              <div class="form-grid">
+                <div class="form-field">
+                  <label for="collector-name">Nombre del Coleccionista</label>
+                  <input type="text" id="collector-name" name="name" placeholder="Dr. Laurent Mercier" required />
+                </div>
+
+                <div class="form-field">
+                  <label for="collector-email">Correo Encriptado / Directo</label>
+                  <input type="email" id="collector-email" name="email" placeholder="l.mercier@privateoffice.ch" required />
+                </div>
+
+                <div class="form-field">
+                  <label for="collector-calibre">Calibre de Interés</label>
+                  <select id="collector-calibre" name="calibre">
+                    <option value="AT-09 Astrolabe Sidéral">Calibre AT-09 — Astrolabe Sidéral</option>
+                    <option value="AT-12 Tourbillon Tri-Axial">Calibre AT-12 — Tourbillon Tri-Axial</option>
+                    <option value="AT-15 Équation du Temps">Calibre AT-15 — Équation du Temps</option>
+                    <option value="Comisión Bespoke">Comisión Astronómica Bespoke</option>
+                  </select>
+                </div>
+
+                <div class="form-field">
+                  <label for="collector-venue">Modalidad de Encuentro</label>
+                  <select id="collector-venue" name="venue">
+                    <option value="Salón Privado Ginebra">Salón Privado — Rue du Rhône, Ginebra</option>
+                    <option value="Presentación Privada Internacional">Presentación Privada — Ciudad del Coleccionista</option>
+                    <option value="Bóveda Digital 1-a-1">Sesión Técnica con Maestro Relojero</option>
+                  </select>
+                </div>
+
+                <div class="form-field full">
+                  <label for="collector-notes">Latitud de Calibración Celestial (Opcional)</label>
+                  <input type="text" id="collector-notes" name="notes" placeholder="Ej. Zúrich 47.3769° N / Tokio 35.6762° N / Buenos Aires 34.6037° S" />
+                </div>
+              </div>
+
+              <div class="form-submit-row">
+                <p class="form-notice">
+                  Protocolo confidencial. Respuesta directa del director de atelier en menos de 24 horas hábiles.
+                </p>
+                <button type="submit" class="magnetic-btn" data-magnetic data-cursor="RESERVE">
+                  <span>Solicitar Dossier</span>
+                  <span>&rarr;</span>
+                </button>
+              </div>
+            </form>
+
+            <div class="dossier-confirmation" id="dossier-confirmation" aria-live="polite">
+              <span class="micro-tag">REGISTRO ENCRIPTADO CONFIRMADO</span>
+              <div class="dossier-code" id="dossier-code">DOSSIER #AE-4620-0000</div>
+              <p class="atelier-lead" style="margin-bottom: 1.5rem;">
+                Su solicitud para <strong id="confirm-calibre" style="color: var(--platinum);"></strong> ha sido asignada al Maestro Relojero Jefe en Ginebra. Recibirá el dossier técnico completo en formato PDF firmado digitalmente.
+              </p>
+              <button type="button" class="ctrl-chip" id="reset-dossier-btn" data-cursor="RESET">
+                Nueva Solicitud
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-monument">
+          <div class="footer-wordmark" data-cursor="GENÈVE">AETHERIS</div>
+        </div>
+
+        <div class="footer-colophon">
+          <span>&copy; 2026 AETHERIS HOROLOGY SA &mdash; GENÈVE</span>
+          <span>SWISS MADE // POINÇON DE GENÈVE STANDARDS</span>
+          <span>PROPIEDAD INTELECTUAL &amp; ARCHIVO METROLÓGICO</span>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ============================================================
+       INTERACTIVE 3D CALIBRE INSPECTOR MODAL
+       ============================================================ -->
+  <div class="inspector-modal" id="inspector-modal" role="dialog" aria-modal="true" aria-labelledby="inspector-title">
+    <div class="inspector-topbar">
+      <div style="display: flex; align-items: center; gap: 1.5rem;">
+        <span style="color: var(--champagne);">AETHERIS 3D CAD INSPECTOR</span>
+        <span id="inspector-top-code" style="color: var(--muted);">CALIBRE AT-09 // TI-6AL-4V</span>
+      </div>
+      <button type="button" class="inspector-close" id="inspector-close" data-magnetic data-cursor="CLOSE">
+        [ESC] Cerrar Visor
+      </button>
+    </div>
+
+    <div class="inspector-body">
+      <div class="inspector-viewport" data-cursor="DRAG 360°">
+        <canvas id="inspector-canvas"></canvas>
+        <div class="inspector-hud-overlay">
+          <div class="inspector-reticle-corners">
+            <span>ARRASTRA PARA ROTAR 360° // SCROLL PARA ZOOM</span>
+            <span id="inspector-angle-readout">AZIMUTH 000° // ELEV 018°</span>
+          </div>
+
+          <div class="inspector-controls">
+            <button type="button" class="ctrl-chip" id="btn-explode" data-cursor="TOGGLE">
+              [Vista Explosionada]
+            </button>
+            <button type="button" class="ctrl-chip" id="btn-wireframe" data-cursor="TOGGLE">
+              [Modo CAD Wireframe]
+            </button>
+            <button type="button" class="ctrl-chip is-active" id="btn-motion" data-cursor="TOGGLE">
+              [Cinemática: Activa]
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="inspector-sidebar">
+        <div>
+          <span class="micro-tag" id="inspector-badge">CALIBRE AT-09 // 412 COMPONENTES</span>
+          <h3 class="inspector-calibre-title" id="inspector-title">Astrolabe Sidéral</h3>
+          <p class="inspector-calibre-text" id="inspector-desc"></p>
+
+          <div class="inspector-spec-list" id="inspector-spec-list"></div>
+
+          <div class="inspector-switcher">
+            <button type="button" class="ctrl-chip" data-switch-calibre="AT-09" data-cursor="LOAD">AT-09</button>
+            <button type="button" class="ctrl-chip" data-switch-calibre="AT-12" data-cursor="LOAD">AT-12</button>
+            <button type="button" class="ctrl-chip" data-switch-calibre="AT-15" data-cursor="LOAD">AT-15</button>
+          </div>
+        </div>
+
+        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--hairline);">
+          <button type="button" class="magnetic-btn" id="inspector-reserve-btn" style="width: 100%;" data-magnetic data-cursor="RESERVE">
+            <span>Solicitar Asignación</span>
+            <span>&rarr;</span>
+          </button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       CORE JAVASCRIPT: THREE.JS + GSAP + MAGNETIC CURSOR + TELEMETRY
+       ============================================================ -->
+
+  <!-- Modularized Application Engine -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
