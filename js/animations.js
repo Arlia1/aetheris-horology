@@ -3,60 +3,89 @@ import { sceneScrollState } from './three-hero.js';
 import { openInspector } from './three-inspector.js';
 
 export function initAnimations() {
-/* ==========================================================
-         4. PRELOADER + GSAP SCROLLTRIGGER KINETIC CHOREOGRAPHY
-         ========================================================== */
-      gsap.registerPlugin(ScrollTrigger);
+  /* ==========================================================
+     4. FAIL-SAFE CINEMATIC PRELOADER & GSAP CHOREOGRAPHY
+     ========================================================== */
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+  }
 
-      const preloaderEl = document.getElementById('preloader');
-      const preloaderBar = document.getElementById('preloader-bar');
-      const preloaderCounter = document.getElementById('preloader-counter');
-      const preloaderStatus = document.getElementById('preloader-status');
+  const preloaderEl = document.getElementById('preloader');
+  const preloaderBar = document.getElementById('preloader-bar');
+  const preloaderCounter = document.getElementById('preloader-counter');
+  const preloaderStatus = document.getElementById('preloader-status');
 
-      const loadProgress = { val: 0 };
-      const preloaderTL = gsap.timeline({
-        onComplete: () => {
-          preloaderEl.style.display = 'none';
-          initScrollAnimations();
-        }
+  let hasCompleted = false;
+  const finishPreloader = () => {
+    if (hasCompleted) return;
+    hasCompleted = true;
+    if (preloaderEl) {
+      preloaderEl.style.transition = 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease';
+      preloaderEl.style.transform = 'translateY(-100%)';
+      setTimeout(() => {
+        preloaderEl.style.display = 'none';
+      }, 820);
+    }
+    if (typeof gsap !== 'undefined') {
+      gsap.from('.hero-reveal', {
+        yPercent: 115,
+        opacity: 0,
+        duration: 1.1,
+        stagger: 0.11,
+        ease: 'power4.out'
       });
+      gsap.from('.hero-float-badge, .hero-statement, .hero-actions', {
+        y: 28,
+        opacity: 0,
+        duration: 0.9,
+        stagger: 0.1,
+        ease: 'power3.out',
+        delay: 0.2
+      });
+    }
+    initScrollAnimations();
+  };
 
-      preloaderTL
-        .to(loadProgress, {
-          val: 100,
-          duration: 1.55,
-          ease: 'power3.inOut',
-          onUpdate: () => {
-            preloaderCounter.textContent = `${loadProgress.val.toFixed(1).padStart(5, '0')}%`;
-            preloaderBar.style.transform = `scaleX(${loadProgress.val / 100})`;
-            if (loadProgress.val > 42 && loadProgress.val < 82) {
-              preloaderStatus.textContent = 'LOCKING SIDEREAL EPOCH...';
-            } else if (loadProgress.val >= 82) {
-              preloaderStatus.textContent = 'ATELIER GENÈVE READY';
-            }
-          }
-        })
-        .to(preloaderEl, {
-          yPercent: -100,
-          duration: 0.95,
-          ease: 'power4.inOut'
-        }, '+=0.15')
-        .from('.hero-reveal', {
-          yPercent: 115,
-          opacity: 0,
-          duration: 1.1,
-          stagger: 0.11,
-          ease: 'power4.out'
-        }, '-=0.55')
-        .from('.hero-float-badge, .hero-statement, .hero-actions', {
-          y: 28,
-          opacity: 0,
-          duration: 0.9,
-          stagger: 0.1,
-          ease: 'power3.out'
-        }, '-=0.75');
+  if (!preloaderEl || prefersReducedMotion) {
+    finishPreloader();
+    return;
+  }
 
-      function initScrollAnimations() {
+  let progress = 0;
+  const startTime = performance.now();
+  const duration = 1200; // 1.2s smooth cinematic intro
+
+  function step(now) {
+    const elapsed = now - startTime;
+    progress = Math.min(100, (elapsed / duration) * 100);
+
+    if (preloaderCounter) {
+      preloaderCounter.textContent = `${progress.toFixed(1).padStart(5, '0')}%`;
+    }
+    if (preloaderBar) {
+      preloaderBar.style.transform = `scaleX(${progress / 100})`;
+    }
+    if (preloaderStatus) {
+      if (progress > 45 && progress < 85) {
+        preloaderStatus.textContent = 'LOCKING SIDEREAL EPOCH...';
+      } else if (progress >= 85) {
+        preloaderStatus.textContent = 'ATELIER GENÈVE READY';
+      }
+    }
+
+    if (progress < 100) {
+      requestAnimationFrame(step);
+    } else {
+      finishPreloader();
+    }
+  }
+
+  requestAnimationFrame(step);
+
+  // Hard safety timeout: guarantee preloader is dismissed after 1.8s
+  setTimeout(finishPreloader, 1800);
+
+  function initScrollAnimations() {
         // 1. 3D Armillary Scroll Choreography across full page
         gsap.timeline({
           scrollTrigger: {

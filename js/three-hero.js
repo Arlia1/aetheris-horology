@@ -1,6 +1,15 @@
 import { pointer, isCoarsePointer } from './config.js';
 
-/* ==========================================================
+export const sceneScrollState = {
+        posX: 1.15,
+        posY: 0.05,
+        camZ: 9.2,
+        rotOffset: 0,
+        scale: 1
+      };
+
+export function initThreeHero() {
+  /* ==========================================================
          3. MAIN THREE.JS ARMILLARY SPHERE / TOURBILLON & STARFIELD
          ========================================================== */
       const mainCanvas = document.getElementById('webgl-stage');
@@ -225,13 +234,7 @@ import { pointer, isCoarsePointer } from './config.js';
       mainScene.add(starField);
 
       // Scroll-reactive state for the 3D Sculpture
-      export const sceneScrollState = {
-        posX: 1.15,
-        posY: 0.05,
-        camZ: 9.2,
-        rotOffset: 0,
-        scale: 1
-      };
+      
 
       const clock = new THREE.Clock();
       let smoothMouseX = 0;
@@ -282,3 +285,4 @@ import { pointer, isCoarsePointer } from './config.js';
         mainCamera.updateProjectionMatrix();
         mainRenderer.setSize(window.innerWidth, window.innerHeight);
       });
+}
